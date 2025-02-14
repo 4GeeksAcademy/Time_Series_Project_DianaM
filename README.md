@@ -1,89 +1,69 @@
-# Data Science Project Boilerplate
+# Time Series Project - [Acea Smart Water Analytics Challenge in Kaggle](https://www.kaggle.com/competitions/acea-water-prediction/data)
 
-This boilerplate is designed to kickstart data science projects by providing a basic setup for database connections, data processing, and machine learning model development. It includes a structured folder organization for your datasets and a set of pre-defined Python packages necessary for most data science tasks.
 
-## Structure
+The goal of this project is to predict the most efficient water availability, in terms of level and water flow for each day of the year, in order to help preserve the health of these waterbodies it is important to
 
-The project is organized as follows:
+## Data structure
 
-- `app.py` - The main Python script that you run for your project.
-- `explore.py` - A notebook to explore data, play around, visualize, clean, etc. Ideally the notebook code should be migrated to the app.py when moving to production.
-- `utils.py` - This file contains utility code for operations like database connections.
-- `requirements.txt` - This file contains the list of necessary python packages.
-- `models/` - This directory should contain your SQLAlchemy model classes.
-- `data/` - This directory contains the following subdirectories:
-  - `interin/` - For intermediate data that has been transformed.
-  - `processed/` - For the final data to be used for modeling.
-  - `raw/` - For raw data without any processing.
+This analytics competition uses datasets that are completely independent from each other. However, it is critical to understand total availability in order to preserve water across the country.
+
+Each dataset represents a different kind of waterbody. As each waterbody is different from the other, the related features are also different
+
+The Acea Group deals with four different type of waterbodies: water springs, lakes, rivers and aquifers.
+
+The Acea Group deals with four different type of waterbodies: 
+* water spring (for which three datasets are provided)
+* lake (for which a dataset is provided)
+* river (for which a dataset is provided)
+* and aquifers (for which four datasets are provided).
+
+
+## Challenge
+
+To predict the amount of water in each unique waterbody
+
+To determine how features influence the water availability of each presented waterbody
+
+# Intervals
+Models should capture volumes for the specific time interval (day/month) of each waterbody (for instance, for a model working on a monthly interval a forecast over the month is expected).
+
+# Expected Outcome
+
+A notebook that can generate 4 mathematical models, one for each category of waterbody (acquifers, water springs, river, lake) that might be applicable to each single waterbody.
+
+
+1. **Waterbody: Auser (Type: Aquifer)**
+Two subsystems: 
+    * NORTH: The former partly influences the behavior of the latter. The levels of the NORTH sector are represented by the values of the SAL, PAG, CoS and DIEC wells.
+    * SOUTH: The levels of the SOUTH sector are represented by the LT2 well. 
  
-    
-## Setup
 
-**Prerequisites**
+2. **Waterbody: Petrignano (Type: Aquifer)
+The groundwater levels are influenced by the following parameters: rainfall, depth to groundwater, temperatures and drainage volumes, level of the Chiascio river.
 
-Make sure you have Python 3.11+ installed on your. You will also need pip for installing the Python packages.
+3. **Waterbody: Doganella (Type: Aquifer)
+The aquifer levels are influenced by the following parameters: rainfall, humidity, subsoil, temperatures and drainage volumes.
 
-**Installation**
+4. **Waterbody: Luco (Type: Aquifer)
+Accessed through wells called Well 1, Well 3 and Well 4 and is influenced by the following parameters: rainfall, depth to groundwater, temperature and drainage volumes.
 
-Clone the project repository to your local machine.
+5. **Waterbody: Amiata (Type: Water spring)**
+Accessed through Ermicciolo, Arbure, Bugnano and Galleria Alta water springs. 
+The levels and volumes of the four sources are influenced by the parameters: rainfall, depth to groundwater, hydrometry, temperatures and drainage volumes.
 
-Navigate to the project directory and install the required Python packages:
+6. **Waterbody: Madonna di Canneto (Type: Water spring)
+Supplied by the water catchment area of the river Melfa.
 
-```bash
-pip install -r requirements.txt
-```
+7. **Waterbody: Lupa (Type: Water spring)
 
-**Create a database (if needed)**
+8. **Waterbody: Arno (Type: River)**
+The availability of water for this waterbody is evaluated by checking the hydrometric level of the river at the section of Nave di Rosano.
 
-Create a new database within the Postgres engine by customizing and executing the following command: `$ createdb -h localhost -U <username> <db_name>`
-Connect to the Postgres engine to use your database, manipulate tables and data: `$ psql -h localhost -U <username> <db_name>`
-NOTE: Remember to check the ./.env file information to get the username and db_name.
+9. **Waterbody: Bilancino (Type: Lake)**
+Artificial lake, during the winter months, the lake is filled up and then, during the summer months, the water of the lake is poured into the Arno river.
 
-Once you are inside PSQL you will be able to create tables, make queries, insert, update or delete data and much more!
+# Important consideration on the correlation between features and date
+It is of the utmost importance to notice that some features like rainfall and temperature, which are present in each dataset, don’t go alongside the date. 
+**Indeed, both rainfall and temperature affect features like level, flow, depth to groundwater and hydrometry some time after it fell down.**
+This means, for instance, that rain fell on 1st January doesn’t affect the mentioned features right the same day but some time later. As we don’t know how many days/weeks/months later rainfall affects these features, this is another aspect to keep into consideration when analyzing the dataset.
 
-**Environment Variables**
-
-Create a .env file in the project root directory to store your environment variables, such as your database connection string:
-
-```makefile
-DATABASE_URL="your_database_connection_url_here"
-```
-
-## Running the Application
-
-To run the application, execute the app.py script from the root of the project directory:
-
-```bash
-python app.py
-```
-
-## Adding Models
-
-To add SQLAlchemy model classes, create new Python script files inside the models/ directory. These classes should be defined according to your database schema.
-
-Example model definition (`models/example_model.py`):
-
-```py
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String
-
-Base = declarative_base()
-
-class ExampleModel(Base):
-    __tablename__ = 'example_table'
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-
-```
-
-## Working with Data
-
-You can place your raw datasets in the data/raw directory, intermediate datasets in data/interim, and the processed datasets ready for analysis in data/processed.
-
-To process data, you can modify the app.py script to include your data processing steps, utilizing pandas for data manipulation and analysis.
-
-## Contributors
-
-This template was built as part of the 4Geeks Academy [Data Science and Machine Learning Bootcamp](https://4geeksacademy.com/us/coding-bootcamps/datascience-machine-learning) by [Alejandro Sanchez](https://twitter.com/alesanchezr) and many other contributors. Find out more about [4Geeks Academy's BootCamp programs](https://4geeksacademy.com/us/programs) here.
-
-Other templates and resources like this can be found on the school GitHub page.
